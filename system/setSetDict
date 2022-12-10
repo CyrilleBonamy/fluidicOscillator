@@ -1,2 +1,1 @@
-cellSet c0 new
-cellSet c0 add boxToCell (0.005 0 -0.001) (0.006 0.005 0.001)
+cellSet c0 new boxToCell (0.005 0 -0.001) (0.006 0.005 0.001)

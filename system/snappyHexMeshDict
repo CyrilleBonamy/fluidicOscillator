@@ -16,9 +16,9 @@ FoamFile
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 // Which of the steps to run
-castellatedMesh true;
-snap true;
-addLayers false;
+castellatedMesh false;
+snap false;
+addLayers true;
 
 
 // Geometry. Definition of all surfaces. All surfaces are of class
@@ -113,8 +113,8 @@ castellatedMeshControls
             {
                 walls       { level (2 2); patchInfo { type wall; }}
                 freeWalls   { level (1 1); patchInfo { type wall; }}
-                front       { level (1 1); patchInfo { type empty; }}
-                back        { level (1 1); patchInfo { type empty; }}
+                front       { level (1 1); patchInfo { type patch; }}
+                back        { level (1 1); patchInfo { type patch; }}
                 inlet       { level (2 2); patchInfo { type patch; }}
                 outlet      { level (1 1); patchInfo { type patch; }}
                 top         { level (1 1); patchInfo { type patch; }}

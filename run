@@ -62,6 +62,9 @@ sed 's/^addLayers .*/addLayers false;/' system/snappyHexMeshDict -i
 snappyHexMesh -overwrite >> logMeshing
 
 
+# ADD EMPTY TO FRONT AND BACK
+
+
 #------------------------------------------------------------------------------
 echo -e "   - Extrude front to make a 2D mesh"
 flattenMesh >> logMeshing
@@ -70,7 +73,7 @@ extrudeMesh >> logMeshing
 
 #------------------------------------------------------------------------------
 echo -e "   - Move mesh to correct possition (for STL, POSTPROCESSING)"
-transformPoints -translate "(0 -0.005 0)"  >> logMeshing
+transformPoints -translate '(0 -0.005 0)' >> logMeshing
 
 
 #------------------------------------------------------------------------------
@@ -84,6 +87,8 @@ sed 's/^castellatedMesh .*/castellatedMesh false;/' system/snappyHexMeshDict -i
 sed 's/^snap .*/snap false;/' system/snappyHexMeshDict -i
 sed 's/^addLayers .*/addLayers true;/' system/snappyHexMeshDict -i
 rm constant/polyMesh/*Level
+
+#BIDOUILLE EMPTY PATCH
 snappyHexMesh -overwrite >> logMeshing
 
 
@@ -98,7 +103,7 @@ echo -e "   - Transform cell-zone-set to cellZone"
 setsToZones >> logMeshing
 rm -r VTK
 
-
+#BIDOUILLE EMPTY PATCH
 #------------------------------------------------------------------------------
 echo -e "\n
 -------------------------------------------------------------------------------
