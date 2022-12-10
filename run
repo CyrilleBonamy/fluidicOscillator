@@ -1,0 +1,130 @@
+#!/bin/bash
+#
+#-------------------------------------------------#
+# Contributor: Tobias Holzmann                    #
+# Updated on:  10 September 2021                  #
+#-------------------------------------------------#
+# Topic:       Bifluidic Oscillator               #
+# OpenFOAM:    version 9 (Foundation)             #
+#-------------------------------------------------#
+# Website:     https://Holzmann-cfd.com           #
+# Email:       community@Holzmann-cfd.com         #
+#-------------------------------------------------#
+
+
+#------------------------------------------------------------------------------
+foamVersion="OpenFOAM-9"
+
+
+#------------------------------------------------------------------------------
+cd ${0%/*} || exit 1
+clear
+source clean
+source .color
+source .preamble
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
+if [ -f cad/backgroundMesh.unv ];
+then
+    echo "   - Background mesh exist, proceed..."
+else
+    echo "   - No background mesh exist, please create a background"
+    echo ""
+    exit
+fi
+
+
+#------------------------------------------------------------------------------
+echo -e "\n
+Start meshing
+-------------------------------------------------------------------------------
+"
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Create background mesh"
+ideasUnvToFoam cad/backgroundMesh.unv > logMeshing
+transformPoints -translate '(-0.0005 0 0)' >> logMeshing
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Extract feature edges"
+surfaceFeatureExtract >> logMeshing
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Meshing with snappyHexMesh (~ 5 minutes)"
+sed 's/^castellatedMesh .*/castellatedMesh true;/' system/snappyHexMeshDict -i
+sed 's/^snap .*/snap true;/' system/snappyHexMeshDict -i
+sed 's/^addLayers .*/addLayers false;/' system/snappyHexMeshDict -i
+snappyHexMesh -overwrite >> logMeshing
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Extrude front to make a 2D mesh"
+flattenMesh >> logMeshing
+extrudeMesh >> logMeshing
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Move mesh to correct possition (for STL, POSTPROCESSING)"
+transformPoints -translate "(0 -0.005 0)"  >> logMeshing
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Remove not necessary boundarys"
+createPatch -overwrite  >> logMeshing
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Inserting layers"
+sed 's/^castellatedMesh .*/castellatedMesh false;/' system/snappyHexMeshDict -i
+sed 's/^snap .*/snap false;/' system/snappyHexMeshDict -i
+sed 's/^addLayers .*/addLayers true;/' system/snappyHexMeshDict -i
+rm constant/polyMesh/*Level
+snappyHexMesh -overwrite >> logMeshing
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Creating cell zone set for passiv scalar"
+rm -r constant/polyMesh/sets
+setSet -batch system/setSetDict >> logMeshing
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Transform cell-zone-set to cellZone"
+setsToZones >> logMeshing
+rm -r VTK
+
+
+#------------------------------------------------------------------------------
+echo -e "\n
+-------------------------------------------------------------------------------
+End Meshing\n
+"
+
+#------------------------------------------------------------------------------
+echo -e "   - Copy 0.orig to 0"
+rm -r 0
+cp -r 0.orig 0
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Start simulation"
+echo -e "   - Renumber mesh for speedup (~5-15%)"
+renumberMesh -overwrite > logSolver
+setFields >> logSolver
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Start transient calculation (a few hours, run over night)"
+interFoam >> logSolver
+
+
+#------------------------------------------------------------------------------
+echo -e "   - Simulation ended\n\n"
+
+
+#------------------------------------------------------------------------------

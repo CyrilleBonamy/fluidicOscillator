@@ -1,0 +1,55 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  9                                     |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      surfaceFeatureExtractDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+regionSTL.stl
+{
+    extractionMethod    extractFromSurface;
+
+    trimFeatures
+    {
+        //- Feature edges that contains less than 'minElem' of edges are
+        //  removed automatically
+        minElem 5;
+
+        //- Remove feature edges that are less than the total length of [m]
+        minLen  0.01;
+    }
+
+    //- This is the angle between faces
+    includedAngle       150;
+
+    //- Since 6.x
+    //  Outputs the curvature of the surface
+    //curvature           no;
+
+    //- Since 6.x
+    //  Outputs the priximity of points and edges to each other
+    //featureProximity    no;
+
+    //- Since 6.x
+    //  The maximum search distance to use, when looking for other feature
+    //  points and edges
+    //maxFeatureProximity  1;
+
+    //- Write features for post processing into *.obj format
+    //  *.obj can be read by ParaView
+    writeObj            no;
+
+    //- Write the surface proximity and curvature to the VTK format
+    writeVTK            no;
+}
+
+// ************************************************************************* //

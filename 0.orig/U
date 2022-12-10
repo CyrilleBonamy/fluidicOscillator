@@ -1,0 +1,105 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  9                                     |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    location    "0";
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+    back
+    {
+        type            empty;
+    }
+    bottom
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 0);
+    }
+    freeWalls
+    {
+        type            slip;
+    }
+    front
+    {
+        type            empty;
+    }
+    inlet
+    {
+        //- Powerful boundary condition
+        type            codedFixedValue;
+        name            myBC;
+        value           uniform (0 0 0);
+
+
+        code
+        #{
+            //- Get the actual time
+            const scalar time = this->db().time().value();
+
+            //- Use the pre-defined PI field defined in FOAM
+            const scalar pi = Foam::constant::mathematical::pi;
+
+            //- Velocity vector at inlet is 1 m/s
+            vector UValue = vector(1,0,0);
+
+            //- If the time is less then 0.5 s, the velocity vector is 
+            //  increased by using the sin function
+            if (time < 0.5)
+            {
+                UValue = vector(sin(time*pi)*1,0,0);
+            }
+
+            operator==(UValue);
+        #};
+
+
+        //- Old groovyBC style - obsolet
+        /*
+        type            groovyBC;
+        refValue        uniform (0.05 0 0);
+        refGradient     uniform (0 0 0);
+        valueFraction   uniform 1;
+        value           uniform (0.05 0 0);
+        valueExpression "t < 0.5 ? vector(sin(t*pi)*1.0,0,0) : vector(1.0,0,0)";
+        gradientExpression "vector(0,0,0)";
+        fractionExpression "1";
+        evaluateDuringConstruction 0;
+        variables       "t=time();";
+        timelines       ();
+        lookuptables    ();
+        */
+    }
+    outlet
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 0);
+    }
+    top
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 0);
+    }
+    walls
+    {
+        type            fixedValue;
+        value           uniform (0 0 0);
+    }
+}
+
+
+// ************************************************************************* //
