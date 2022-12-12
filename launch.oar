@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#OAR -n fluidic_oscillator
+#OAR -l /nodes=1/core=8,walltime=24:0:0
+
+source /etc/profile
+
+module load openfoam/2206plus
+
+mpirun -np 8 interFoam -parallel
+

@@ -22,13 +22,13 @@ ddtSchemes
 
 gradSchemes
 {
-    default         Gauss linear;
+    default         cellLimited Gauss linear 1;
 }
 
 divSchemes
 {
-    div(rhoPhi,U)   Gauss linearUpwind grad(U);
-    div(phi,alpha)  Gauss vanLeer;
+    div(rhoPhi,U)   Gauss linearUpwind grad(U);//upwind;
+    div(phi,alpha)  Gauss vanLeer;//Gauss upwind;
     div(phirb,alpha) Gauss linear;
     div(phi,k)      Gauss upwind;
     div(phi,S)      Gauss upwind;

@@ -55,8 +55,6 @@ maxDeltaT       0.0005;     // The maximal allowed time step
 
 libs
 (
-    //- Old groovyBC usage
-    //"libgroovyBC.so" 
     "libutilityFunctionObjects.so"
     "libsolverFunctionObjects.so"
 );
@@ -99,38 +97,19 @@ functions
                 type            scalarSemiImplicitSource;
                 active          true;
 
-//                scalarSemiImplicitSourceCoeffs
-//                {
-                    //- Add the source to the cells given in the cellZone
-                    selectionMode   cellZone;
-                    cellZone        c0;
+                //- Add the source to the cells given in the cellZone
+                selectionMode   cellZone;
+                cellZone        c0;
 
-                    //- Take care of the specific vs absolute value
-                    volumeMode      specific;
-                    injectionRateSuSp
-                    {
-                        //- Value 5 starting at time t = 0
-                        S   (5 0);
-                    }
-//                }
+                //- Take care of the specific vs absolute value
+                volumeMode      specific;
+                injectionRateSuSp
+                {
+                    //- Value 5 starting at time t = 0
+                    S   (5 0);
+                }
             }
         }
-    }
-
-    //- Additionally, include the residual functionallity. This will save
-    //  the residuals into a file on the fly. Can be monitored using gnuplot
-    residuals
-    {
-        type           residuals;
-        functionObjectLibs ("libutilityFunctionObjects.so");
-        enabled        true;
-    writeControl   timeStep;
-        writeInterval  1;
-        fields
-        (
-            U
-            p
-        );
     }
 }
 

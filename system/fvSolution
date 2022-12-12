@@ -75,7 +75,7 @@ PIMPLE
 
     //- Turn on of off the momentum predictor. In a numerical point of view
     //  not necessary. Useful for 2-phase and high viscosity ratios
-    momentumPredictor   false;
+    momentumPredictor   true;
 
     //- Calculate the turbulence in each outer loop or only at the end of one
     //  time step calculation. High turbulent flow calculation should calculate
@@ -90,7 +90,7 @@ PIMPLE
 
     //- Mesh non-orthogonality correctors. Foam handles non-orthogonality quite
     //  good, so there is no need to use or only up to 2 - 3
-    nNonOrthogonalCorrectors 0;
+    nNonOrthogonalCorrectors 2;
 
     //- Outer loops, re-calculation around p-U and other equations within
     //  one time step. For stiff problems while using under-relaxation

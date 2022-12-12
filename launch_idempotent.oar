@@ -1,0 +1,55 @@
+#!/bin/bash
+
+#OAR -t idempotent
+#OAR --checkpoint 1200
+#OAR -n fluidic_oscillator
+#OAR -l /nodes=1/core=8,walltime=24:0:0
+
+source /etc/profile
+
+module load openfoam/2206plus
+
+sed -i -e 's/ nextWrite;/ endTime;/g' system/controlDict
+
+
+
+trap "sed -i -e 's/ endTime;/ nextWrite;/g' system/controlDict" USR2
+
+MAX_OAR_LOOP=3
+
+if [ -e oar-loop-barrier.log ]
+then
+	oar_loop=$(grep '^OAR_LOOP_COUNTER=' oar-loop-barrier.log | cut -d '=' -f 2)
+	oar_time=$(grep '^OAR_SIMULATION_TIME=' oar-loop-barrier.log | cut -d '=' -f 2)
+
+else
+	oar_loop=0
+	oar_time=first
+fi
+
+mpirun -np 8 interFoam -parallel &
+
+while [ $(jobs -p | wc -l) -gt 0 ]
+do
+	wait
+done
+
+if [ ${oar_loop} -gt ${MAX_OAR_LOOP} ]
+then
+	echo "Too many job resubmit, quit idempotent  oar loop"
+	exit 1
+else
+	oar_time2=$(ls -td -- processor0/*/ | head -n 1 |cut -d '/' -f 2)
+	if [ "${oar_time}" == "${oar_time2}" ]
+	then
+		echo "No time advance"
+		exit 2
+	else
+		oar_loop=$(( ${oar_loop} + 1 ))
+		echo "OAR_LOOP_COUNTER=${oar_loop}" 	>  oar-loop-barrier.log
+		echo "OAR_SIMULATION_TIME=${oar_time2}"	>> oar-loop-barrier.log
+
+		exit 99
+	fi
+fi
+
