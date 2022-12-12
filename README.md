@@ -46,4 +46,3 @@ Acknowledgements
 software developed primarily by OpenCFD Ltd since 2004.
 The OpenFOAM trademark is owned by OpenCFD Ltd.
 
-![oscillator image](https://ibb.co/gjtTh1T)
