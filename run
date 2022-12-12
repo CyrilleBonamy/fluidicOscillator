@@ -20,8 +20,6 @@ foamVersion="OpenFOAM-9"
 cd ${0%/*} || exit 1
 clear
 source clean
-source .color
-source .preamble
 #------------------------------------------------------------------------------
 
 
