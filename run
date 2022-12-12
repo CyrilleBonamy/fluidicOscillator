@@ -62,8 +62,8 @@ sed 's/^addLayers .*/addLayers false;/' system/snappyHexMeshDict -i
 snappyHexMesh -overwrite >> logMeshing
 
 
-# ADD EMPTY TO FRONT AND BACK
-
+# ADD EMPTY TO FRONT AND BACK (hack because snappyHexMesh bug with empty boundaries)
+changeDictionary -instance constant/polyMesh -dict system/changeDictionaryDict_empty >> logMeshing
 
 #------------------------------------------------------------------------------
 echo -e "   - Extrude front to make a 2D mesh"
@@ -88,7 +88,8 @@ sed 's/^snap .*/snap false;/' system/snappyHexMeshDict -i
 sed 's/^addLayers .*/addLayers true;/' system/snappyHexMeshDict -i
 rm constant/polyMesh/*Level
 
-#BIDOUILLE EMPTY PATCH
+# ADD PATCH TO FRONT AND BACK (hack because snappyHexMesh bug with empty boundaries)
+changeDictionary -instance constant/polyMesh -dict system/changeDictionaryDict >> logMeshing
 snappyHexMesh -overwrite >> logMeshing
 
 
@@ -103,7 +104,9 @@ echo -e "   - Transform cell-zone-set to cellZone"
 setsToZones >> logMeshing
 rm -r VTK
 
-#BIDOUILLE EMPTY PATCH
+# ADD EMPTY TO FRONT AND BACK (hack because snappyHexMesh bug with empty boundaries)
+changeDictionary -instance constant/polyMesh -dict system/changeDictionaryDict_empty >> logMeshing
+
 #------------------------------------------------------------------------------
 echo -e "\n
 -------------------------------------------------------------------------------

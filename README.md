@@ -31,7 +31,7 @@ oarsub -S ./launch.oar
 Usage
 -----
 
-Blabla
+Use paraview in decompose mode to display the results
 
 Developers
 ----------
