@@ -8,7 +8,7 @@ This repository provides the fluidicOscillator testcase from Holzmann, adapted b
 Status
 ------
 
-The adaptation of the testcase is in development and is not functional.
+The adaptation of the testcase is done.
 
 Pull requests are encouraged!
 
