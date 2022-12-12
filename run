@@ -124,12 +124,17 @@ setFields >> logSolver
 
 
 #------------------------------------------------------------------------------
-echo -e "   - Start transient calculation (a few hours, run over night)"
-interFoam >> logSolver
+echo -e "   - Decompose Mesh for parallel run"
+decomposePar >> logSolver
 
 
 #------------------------------------------------------------------------------
-echo -e "   - Simulation ended\n\n"
+#echo -e "   - Start transient calculation (a few hours, run over night)"
+#mpirun -np 8 interFoam -parallel >> logSolver
+
+
+#------------------------------------------------------------------------------
+#echo -e "   - Simulation ended\n\n"
 
 
 #------------------------------------------------------------------------------

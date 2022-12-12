@@ -25,6 +25,7 @@ cd $WM_PROJECT_USER_DIR
 git clone https://github.com/CyrilleBonamy/fluidicOscillator
 cd fluidicOscillator
 ./run
+oarsub -S ./launch.oar
 ```
 
 Usage
@@ -45,4 +46,4 @@ Acknowledgements
 software developed primarily by OpenCFD Ltd since 2004.
 The OpenFOAM trademark is owned by OpenCFD Ltd.
 
-![scour image](https://i.ibb.co/pWjZqd4/scour3-D-cylinder.jpg)
+![oscillator image](https://ibb.co/gjtTh1T)
